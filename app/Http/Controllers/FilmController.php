@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Http\Request;
 class FilmController extends Controller
 {
 
@@ -81,4 +81,74 @@ class FilmController extends Controller
         }
         return view("films.list", ["films" => $films_filtered, "title" => $title]);
     }
+    
+    public function listAllFilmsDescending()
+    {
+        $title = "Listado de todas las Películas Ordenadas por Año Descendente";
+        $films = FilmController::readFilms();
+    
+        // Ordenar por año de forma descendente
+        usort($films, function($a, $b) {
+            return $b['year'] <=> $a['year'];
+        });
+    
+        return view('films.list', ["films" => $films, "title" => $title]);
+    }
+  
+    public function filmCount()
+    {
+        $films = FilmController::readFilms();
+        $filmCount = count($films);
+    
+        $title = "Número Total de Películas";
+    
+        return view('count', ["filmCount" => $filmCount, "title" => $title]);
+    }
+    
+    public function createFilm(Request $request)
+    {
+        // Obtener el contenido actual del archivo JSON
+        $films = json_decode(file_get_contents(storage_path('app/public/films.json')), true);
+    
+        // Validar los datos del formulario
+        $validatedData = $request->validate([
+            'name' => 'required|unique:peliculas',
+            'year' => 'required|integer',
+            'genre' => 'required',
+            'country' => 'required',
+            'duration' => 'required|integer',
+            'img_url' => 'required|url',
+        ]);
+    
+        // Verificar si la película ya existe
+        foreach ($films as $film) {
+            if ($film['name'] === $validatedData['name']) {
+                return redirect('/')->with('error', 'La película ya existe');
+            }
+        }
+    
+        // Verificar si la URL de la imagen es válida
+        $imageSize = @getimagesize($validatedData['img_url']);
+        if ($imageSize === false) {
+            return redirect('/')->with('error', 'La URL de la imagen no es válida');
+        }
+    
+        // Agregar la nueva película al arreglo de películas
+        $films[] = [
+            'name' => $validatedData['name'],
+            'year' => $validatedData['year'],
+            'genre' => $validatedData['genre'],
+            'country' => $validatedData['country'],
+            'duration' => $validatedData['duration'],
+            'img_url' => $validatedData['img_url'],
+        ];
+    
+        // Guardar los datos actualizados en el archivo JSON
+        file_put_contents(storage_path('app/public/films.json'), json_encode($films));
+    
+        // Redirigir a la vista de películas con los datos actualizados
+        return redirect('/')->with('success', 'Película agregada correctamente');
+    }
+    
+    
 }

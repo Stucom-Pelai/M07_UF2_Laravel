@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\FilmController;
 use App\Http\Middleware\ValidateYear;
+use App\Http\Middleware\ValidateUrl;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,3 +30,25 @@ Route::middleware('year')->group(function() {
 });
 
 
+Route::middleware('year')->group(function() {
+    Route::group(['prefix'=>'filmout'], function(){
+        // ... Otras rutas existentes
+
+        // Nueva ruta para películas ordenadas por año descendente
+        Route::get('allFilmsDescending', [FilmController::class, "listAllFilmsDescending"])
+            ->name('allFilmsDescending');
+    });
+});
+
+Route::middleware('year')->group(function() {
+    Route::group(['prefix'=>'filmout'], function(){
+        // ... Otras rutas existentes
+
+        // Nueva ruta para el contador de películas
+        Route::get('filmCount', [FilmController::class, "filmCount"])
+            ->name('filmCount');
+    });
+});
+
+
+Route::post('/createFilm', [FilmController::class, 'createFilm'])->name('createFilm');

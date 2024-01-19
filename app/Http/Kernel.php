@@ -65,4 +65,8 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'year' => \App\Http\Middleware\ValidateYear::class
     ];
+
+
+    
 }
+
