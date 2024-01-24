@@ -32,7 +32,6 @@ Route::middleware('year')->group(function() {
 
 Route::middleware('year')->group(function() {
     Route::group(['prefix'=>'filmout'], function(){
-        // ... Otras rutas existentes
 
         // Nueva ruta para películas ordenadas por año descendente
         Route::get('allFilmsDescending', [FilmController::class, "listAllFilmsDescending"])
@@ -51,4 +50,6 @@ Route::middleware('year')->group(function() {
 });
 
 
-Route::post('/createFilm', [FilmController::class, 'createFilm'])->name('createFilm');
+Route::group(['prefix' => 'filmin'], function () {
+    Route::post('/createFilm', [FilmController::class, 'createFilm'])->name('createFilm');
+});
