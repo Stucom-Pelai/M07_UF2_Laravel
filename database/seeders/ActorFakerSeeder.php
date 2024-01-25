@@ -18,6 +18,7 @@ class ActorFakerSeeder extends Seeder
                 'birthdate' => $faker->date,
                 'country' => $faker->country,
                 'img_url' => $faker->imageUrl(),
+                'nueva_columna' => $faker->word, // Change this line based on the data type of 'nueva_columna'
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
