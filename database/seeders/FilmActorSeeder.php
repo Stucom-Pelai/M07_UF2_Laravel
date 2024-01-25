@@ -20,12 +20,15 @@ class FilmActorSeeder extends Seeder
             $randomActorIds = $faker->randomElements($actorIds, $numberOfActors);
 
             foreach ($randomActorIds as $actorId) {
+                $alias = $faker->optional()->word; // Genera un alias de forma opcional
+
                 DB::table('films_actors')->insert([
                     'film_id' => $filmId,
                     'actor_id' => $actorId,
-                    'created_at' => now(),
-                    'updated_at' => now(),
+                    'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
+                    'updated_at' => $faker->dateTimeBetween('-1 year', 'now'),
                 ]);
+
             }
         }
     }
